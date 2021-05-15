@@ -1,10 +1,3 @@
-class Card {
-  constructor() {
-    this.number = number;
-    this.suit = suit;
-  }
-}
-
 const DECKSIZE = 52;
 
 let deck = [];
@@ -109,6 +102,14 @@ let shuffle_cut = (deck) => {
   return [...secondHalf, ...firstHalf];
 }
 
+/** Sets a middle-point somewhere in the deck to split the pile
+ * favor the middle (bellcurve) with average of two random numbers between 1 and 52
+ * 
+ * @returns integer
+ */
 function setBreakPoint() {
-  return DECKSIZE/2;
+  const firstNum = Math.random()*DECKSIZE;
+  const secondNum = Math.random()*DECKSIZE;
+
+  return Math.floor((firstNum+secondNum)/2);
 }
