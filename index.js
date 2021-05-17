@@ -2,9 +2,11 @@ const DECKSIZE = 52;
 const SUITSIZE = 13;
 
 class Card {
-  constructor(id, suit, rank) {
+  constructor(suit, rank, suit_symbol, rank_symbol) {
     this.suit = suit;
     this.rank = rank;
+    this.suit_symbol = suit_symbol;
+    this.rank_symbol = rank_symbol;
   }
 }
 
@@ -12,12 +14,14 @@ function generateDeck() {
   let deck = [];
   
   const suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
+  const suits_symbol = ['&#x2665;', '&#x2666;', '&#x2660;', '&#x2663;'];
   const ranks = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King'];
+  const ranks_symbol = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   
   let suitIndex = 0;
   let rankIndex = 0;
   for(let i=0; i<DECKSIZE; i++) {
-    let card = new Card(i, suits[suitIndex], ranks[rankIndex]);
+    let card = new Card(suits[suitIndex], ranks[rankIndex], suits_symbol[suitIndex], ranks_symbol[rankIndex]);
     deck[i] = card;
     
     if(rankIndex < SUITSIZE-1) {
@@ -152,5 +156,57 @@ function setBreakPoint() {
   return Math.floor((firstNum+secondNum)/2);
 }
 
-let deck = generateDeck()
 
+// Gameplay functions
+
+function shuffle(deck) {
+  let shuffledDeck = [...deck];
+
+  for(let i=0; i<10; i++) {
+    shuffledDeck = shuffle_overhand(shuffledDeck);
+  }
+  shuffledDeck = shuffle_riffle(shuffledDeck);
+  shuffledDeck = shuffle_pile(shuffledDeck);
+  for(let i=0; i<10; i++) {
+    shuffledDeck = shuffle_overhand(shuffledDeck);
+  }
+  shuffledDeck = shuffle_riffle(shuffledDeck);
+  shuffledDeck = shuffle_pile(shuffledDeck);
+  shuffledDeck = shuffle_cut(shuffledDeck);
+
+  return shuffledDeck;
+}
+
+function gameloop() {
+  const deck = generateDeck()
+
+  let shuffledDeck = shuffle(deck);
+  let amountToDraw = 5;
+  
+  let hand = drawHand(amountToDraw);
+
+  function drawHand(amountToDraw) {
+    let hand = [];
+    for(let i=0; i<amountToDraw; i++) {
+      hand[i] = shuffledDeck.shift(shuffledDeck);
+    }
+    return hand;
+  }
+  
+  for(let i=0; i<hand.length; i++) {
+    const red_cards = ['Hearts', 'Diamonds'];
+    const black_cards = ['Clubs', 'Spades'];
+
+    let color = 'black';
+    if(red_cards.includes(hand[i].suit)) {
+      color = 'red';
+    }
+
+    document.getElementById(`slot_${i}`).innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
+  }
+
+  console.log(shuffledDeck);
+
+}
+
+gameloop();

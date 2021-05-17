@@ -1,0 +1,15 @@
+.slot {
+  font-size: 60px;
+  border: 2px solid black;
+  display: inline-block;
+  width: 18%;
+  box-shadow: 2px 2px 5px gray;
+}
+
+.red {
+  color: red;
+}
+
+.black {
+  color: black;
+}
