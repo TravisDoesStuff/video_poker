@@ -185,6 +185,8 @@ function gameloop() {
   
   let hand = drawHand(amountToDraw);
 
+  renderCards();
+
   function drawHand(amountToDraw) {
     let hand = [];
     for(let i=0; i<amountToDraw; i++) {
@@ -192,21 +194,35 @@ function gameloop() {
     }
     return hand;
   }
+
+  function renderCards() {
+    for(let i=0; i<hand.length; i++) {
+      const red_cards = ['Hearts', 'Diamonds'];
+      const black_cards = ['Clubs', 'Spades'];
   
-  for(let i=0; i<hand.length; i++) {
-    const red_cards = ['Hearts', 'Diamonds'];
-    const black_cards = ['Clubs', 'Spades'];
-
-    let color = 'black';
-    if(red_cards.includes(hand[i].suit)) {
-      color = 'red';
+      let color = 'black';
+      if(red_cards.includes(hand[i].suit)) {
+        color = 'red';
+      }
+  
+      document.getElementById(`card_${i}`).innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
+      document.getElementById(`card_${i}`).addEventListener('click', (e) => {
+        if(!e.target.classList.contains('holding')) {
+          e.target.classList.add('holding');
+        } else {
+          e.target.classList.remove('holding');
+        }
+      });
     }
-
-    document.getElementById(`slot_${i}`).innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
   }
 
   console.log(shuffledDeck);
 
+  document.getElementById(`button_draw`).addEventListener('click', (e) => {
+    e.preventDefault;
+    hand = drawHand(5);
+    renderCards(hand);
+  });
 }
 
 gameloop();
