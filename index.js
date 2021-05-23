@@ -1,5 +1,6 @@
 const DECKSIZE = 52;
 const SUITSIZE = 13;
+const HANDSIZE = 5;
 
 class Card {
   constructor(suit, rank, suit_symbol, rank_symbol) {
@@ -181,18 +182,27 @@ function gameloop() {
   const deck = generateDeck()
 
   let shuffledDeck = shuffle(deck);
-  let amountToDraw = 5;
   
-  let hand = drawHand(amountToDraw);
+  let hand = [];
+  let hold = ['','','','',''];
+  let secondRound = false;
 
-  renderCards();
+  window.addEventListener("load", function() {
+    playRound();
+  });
 
-  function drawHand(amountToDraw) {
-    let hand = [];
-    for(let i=0; i<amountToDraw; i++) {
-      hand[i] = shuffledDeck.shift(shuffledDeck);
+  function playRound() {
+    drawHand();
+    renderCards();
+
+    secondRound = !secondRound;
+  }
+
+  function drawHand() {
+    for(let i=0; i<HANDSIZE; i++) {
+      hand[i] = hold[i]=='' ? shuffledDeck.shift() : hold[i];
     }
-    return hand;
+    hold = ['','','','',''];
   }
 
   function renderCards() {
@@ -205,23 +215,31 @@ function gameloop() {
         color = 'red';
       }
   
-      document.getElementById(`card_${i}`).innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
-      document.getElementById(`card_${i}`).addEventListener('click', (e) => {
-        if(!e.target.classList.contains('holding')) {
-          e.target.classList.add('holding');
-        } else {
-          e.target.classList.remove('holding');
-        }
-      });
+      // Assign cards suit and rank
+      let card = document.getElementById(`card_${i}`);
+      card.innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
+      card.classList.remove('holding');
     }
   }
 
-  console.log(shuffledDeck);
+  // Click to hold card
+  for(let i=0; i<HANDSIZE; i++) {
+    document.getElementById(`card_${i}`).addEventListener('click', (e) => {
+      let select_slot = e.target.getAttribute('id').slice(-1);
+
+      if(!e.target.classList.contains('holding')) {
+        e.target.classList.add('holding');
+        hold[select_slot] = hand[select_slot];
+      } else {
+        e.target.classList.remove('holding');
+        hold[select_slot] = '';
+      }
+    });
+  }
 
   document.getElementById(`button_draw`).addEventListener('click', (e) => {
     e.preventDefault;
-    hand = drawHand(5);
-    renderCards(hand);
+    playRound();
   });
 }
 
