@@ -196,6 +196,7 @@ function gameloop() {
     renderCards();
 
     secondRound = !secondRound;
+    checkHand();
   }
 
   function drawHand() {
@@ -241,6 +242,60 @@ function gameloop() {
     e.preventDefault;
     playRound();
   });
+
+  function checkHand() {
+
+    function orderRanks(){
+      let orderedHand = hand.map((card) => {
+        let orderedCard;
+        switch(card.rank_symbol) {
+          case 'A':
+            orderedCard = 1
+            break;
+          case 'J':
+            orderedCard = 11;
+            break;
+          case 'Q':
+            orderedCard = 12;
+            break;
+          case 'K':
+            orderedCard = 13;
+            break
+          default:
+            orderedCard = parseInt(card.rank_symbol);
+            break;
+        }
+        return orderedCard;
+      });
+  
+      return orderedHand.sort((a, b) => a - b);
+    }
+
+    const isRoyal = () => {
+
+    };
+    const isFlush = () => {
+      let unique_suits = hand.map((card) => card.suit);
+      return [...new Set(unique_suits)].length == 1;
+    }
+    const isStraight = () => {
+      let isStraight = true;
+      let sorted_ranks = orderRanks();
+      
+      let index_value = sorted_ranks[0];
+      for(let i=1; i<sorted_ranks.length; i++) {
+        console.log(sorted_ranks[i]-index_value);
+        if((sorted_ranks[i]-index_value)==1) {
+          index_value = sorted_ranks[i];
+        } else {
+          isStraight = false;
+          break;
+        }
+      }
+      return isStraight;
+    };
+
+  }
 }
 
 gameloop();
