@@ -284,7 +284,6 @@ function gameloop() {
       
       let index_value = sorted_ranks[0];
       for(let i=1; i<sorted_ranks.length; i++) {
-        console.log(sorted_ranks[i]-index_value);
         if((sorted_ranks[i]-index_value)==1) {
           index_value = sorted_ranks[i];
         } else {
@@ -294,7 +293,23 @@ function gameloop() {
       }
       return isStraight;
     };
+    const uniqueRanks = () => {
+      let hand_ranks = orderRanks(hand);
+      return [...new Set(hand_ranks)].length;
+      // 4 is pair
+      // 3 is two pair or three of a kind
+      // 2 is full house or four of a kind
+    }
+    const highestNumOfAKind = () => {
+      let highestOfAKind = 0;
+      let sorted_ranks = orderRanks();
 
+      for(let i=0; i<sorted_ranks.length; i++) {
+        
+      }
+    }
+
+    console.log(uniqueRanks());
   }
 }
 
