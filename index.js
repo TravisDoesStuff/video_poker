@@ -148,6 +148,8 @@ let shuffle_cut = (deck) => {
 /** Sets a middle-point somewhere in the deck to split the pile
  * favor the middle (bellcurve) with average of two random numbers between 1 and 52
  * 
+ * Might need to throw in a few more numbers to reduce the size of the bell curve
+ * 
  * @returns integer
  */
 function setBreakPoint() {
@@ -195,8 +197,11 @@ function gameloop() {
     drawHand();
     renderCards();
 
+    if(secondRound) {
+      let winningHand = checkHand();
+      document.getElementById(winningHand.toLowerCase().split(' ').join('_')).classList.add('winning_payout_row');
+    }
     secondRound = !secondRound;
-    checkHand();
   }
 
   function drawHand() {
@@ -244,7 +249,6 @@ function gameloop() {
   });
 
   function checkHand() {
-
     function orderRanks(){
       let orderedHand = hand.map((card) => {
         let orderedCard;
@@ -270,9 +274,15 @@ function gameloop() {
   
       return orderedHand.sort((a, b) => a - b);
     }
-
     const isRoyal = () => {
-
+      let isRoyal = true;
+      for(let i=0; i<hand.length; i++) {
+        if(hand[i] > 1 && hand[i] < 10) {
+          isRoyal = false;
+          break;
+        }
+      }
+      return isRoyal;
     };
     const isFlush = () => {
       let unique_suits = hand.map((card) => card.suit);
@@ -301,15 +311,43 @@ function gameloop() {
       // 2 is full house or four of a kind
     }
     const highestNumOfAKind = () => {
-      let highestOfAKind = 0;
-      let sorted_ranks = orderRanks();
-
-      for(let i=0; i<sorted_ranks.length; i++) {
-        
+      let highestNumOfAKind = 0;
+      let ranks = [];
+      for(let i=0; i<hand.length; i++) {
+        const rank = hand[i].rank;
+        ranks[rank] = ranks[rank] ? ranks[rank]+1 : 1;
       }
+      for(rank in ranks) {
+        const rank_count = ranks[rank];
+        if(rank_count > highestNumOfAKind) {
+          highestNumOfAKind = rank_count;
+        }
+      }
+      return highestNumOfAKind;
     }
 
-    console.log(uniqueRanks());
+    let handRank = 'No Payout';
+    if(isRoyal() && isFlush()) {
+      handRank = 'Royal Flush';
+    } else if(isStraight() && isFlush()) {
+      handRank = 'Straight Flush';
+    } else if(highestNumOfAKind()==4) {
+      handRank = 'Four of a Kind';
+    } else if(highestNumOfAKind()==3 && uniqueRanks()==2) {
+      handRank = 'Full House';
+    } else if(isFlush()) {
+      handRank = 'Flush';
+    } else if(isStraight()) {
+      handRank = 'Straight';
+    } else if(highestNumOfAKind()==3 && uniqueRanks()==3) {
+      handRank = 'Three of a Kind';
+    } else if(highestNumOfAKind()==2 && uniqueRanks()==3) {
+      handRank = 'Two Pair';
+    } else if(uniqueRanks()==4) {
+      handRank = 'Pair';
+    }
+
+    return handRank;
   }
 }
 
