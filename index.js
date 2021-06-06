@@ -276,8 +276,9 @@ function gameloop() {
     }
     const isRoyal = () => {
       let isRoyal = true;
-      for(let i=0; i<hand.length; i++) {
-        if(hand[i] > 1 && hand[i] < 10) {
+      let sorted_ranks = orderRanks();
+      for(let i=0; i<sorted_ranks.length; i++) {
+        if(sorted_ranks[i] > 1 && sorted_ranks[i] < 10) {
           isRoyal = false;
           break;
         }
@@ -306,9 +307,6 @@ function gameloop() {
     const uniqueRanks = () => {
       let hand_ranks = orderRanks(hand);
       return [...new Set(hand_ranks)].length;
-      // 4 is pair
-      // 3 is two pair or three of a kind
-      // 2 is full house or four of a kind
     }
     const highestNumOfAKind = () => {
       let highestNumOfAKind = 0;
