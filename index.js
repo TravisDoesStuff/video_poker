@@ -197,9 +197,23 @@ function gameloop() {
     drawHand();
     renderCards();
 
+    let playButton = document.getElementById('button_draw');
+
     if(secondRound) {
       let winningHand = checkHand();
       document.getElementById(winningHand.toLowerCase().split(' ').join('_')).classList.add('winning_payout_row');
+      playButton.innerText = 'Replay';
+      Array.from(document.querySelectorAll(`.card`)).forEach((card) => card.removeEventListener('click', holdCard));
+    } else {
+      // reset the game
+      shuffledDeck = shuffle(deck);
+      document.querySelectorAll('tr');
+      Array.from(document.querySelectorAll('tr.winning_payout_row')).forEach((row) => row.classList.remove('winning_payout_row'));
+      playButton.innerText = 'Draw';
+
+      for(let i=0; i<HANDSIZE; i++) {
+        document.getElementById(`card_${i}`).addEventListener('click', holdCard);
+      }
     }
     secondRound = !secondRound;
   }
@@ -228,19 +242,16 @@ function gameloop() {
     }
   }
 
-  // Click to hold card
-  for(let i=0; i<HANDSIZE; i++) {
-    document.getElementById(`card_${i}`).addEventListener('click', (e) => {
-      let select_slot = e.target.getAttribute('id').slice(-1);
+  function holdCard(e) {
+    let select_slot = e.target.getAttribute('id').slice(-1);
 
-      if(!e.target.classList.contains('holding')) {
-        e.target.classList.add('holding');
-        hold[select_slot] = hand[select_slot];
-      } else {
-        e.target.classList.remove('holding');
-        hold[select_slot] = '';
-      }
-    });
+    if(!e.target.classList.contains('holding')) {
+      e.target.classList.add('holding');
+      hold[select_slot] = hand[select_slot];
+    } else {
+      e.target.classList.remove('holding');
+      hold[select_slot] = '';
+    }
   }
 
   document.getElementById(`button_draw`).addEventListener('click', (e) => {
