@@ -237,19 +237,32 @@ function gameloop() {
   
       // Assign cards suit and rank
       let card = document.getElementById(`card_${i}`);
-      card.innerHTML = `<span class='${color}'>${hand[i].suit_symbol}${hand[i].rank_symbol}</span>`;
+      let card_identifier = card.querySelector('.card_identifier');
+      card_identifier.classList.add(color);
+      let card_rank = card_identifier.querySelector('.card_rank');
+      let card_suit = card_identifier.querySelector('.card_suit');
+      card_rank.innerHTML = hand[i].rank_symbol;
+      card_suit.innerHTML = hand[i].suit_symbol;
+
+      let card_identifier_flipped = card.querySelector('.card_identifier-flipped');
+      card_identifier_flipped.classList.add(color);
+      let card_rank_flipped = card_identifier_flipped.querySelector('.card_rank');
+      let card_suit_flipped = card_identifier_flipped.querySelector('.card_suit');
+      card_rank_flipped.innerHTML = hand[i].rank_symbol;
+      card_suit_flipped.innerHTML = hand[i].suit_symbol;
+
       card.classList.remove('holding');
     }
   }
 
   function holdCard(e) {
-    let select_slot = e.target.getAttribute('id').slice(-1);
+    let select_slot = this.getAttribute('id').slice(-1);
 
-    if(!e.target.classList.contains('holding')) {
-      e.target.classList.add('holding');
+    if(!this.classList.contains('holding')) {
+      this.classList.add('holding');
       hold[select_slot] = hand[select_slot];
     } else {
-      e.target.classList.remove('holding');
+      this.classList.remove('holding');
       hold[select_slot] = '';
     }
   }

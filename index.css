@@ -49,6 +49,29 @@ td {
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.7);
   cursor: pointer;
+  position: relative;
+}
+
+.card_identifier {
+  display: inline-block;
+  width: 98%;
+  height: 50%;
+  padding-left: 5px;
+}
+.card_rank{
+  position: absolute;
+  margin-top: 0;
+}
+.card_suit{
+  position: absolute;
+  margin-top: 0.7em;
+}
+.card_identifier-flipped {
+  display: inline-block;
+  width: 98%;
+  height: 48%;
+  padding-left: 5px;
+  transform: rotateZ(180deg);
 }
 
 .red {
